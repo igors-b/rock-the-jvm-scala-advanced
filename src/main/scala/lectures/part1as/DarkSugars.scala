@@ -14,9 +14,9 @@ object DarkSugars extends App {
   println(description)
 
   // example
-  val aTryInstance = Try { // apply method of Try
-    throw RuntimeException
-  }
+//  val aTryInstance = Try { // apply method of Try
+//    throw RuntimeException
+//  }
 
   List(1,2,4).map { x =>
     x + 1
