@@ -121,11 +121,24 @@ object StreamsPlayground extends App {
     [2 3 5 7 11 13 17 19 ...]
    */
 
+  // [first, fibonacci(second, first + second)]
   def fibonacci(first: Int, second: Int): MyStream[Int] =
     new NonEmptyStream[Int](first, fibonacci(second, first + second))
 
   println(fibonacci(1,1).take(10).toList())
 
+  /*
+    [ 2 3 4 5 6 7 8 9 10 11 12 ...]
+    [ 2 3 5 7 9 11 13...] devided by 2
+    [ 2 eratosthenes applied to (numbers filtered by n % 2 != 0) ]
+    [ 2 3 eratosthenes applied to [5 7 9 11 13 ...] filtered by n % 3 != 0 ]
+   */
+  // eratosthenes sieve
+  def eratosthenes(numbers: MyStream[Int]): MyStream[Int] =
+    if (numbers.isEmpty) numbers
+    else new NonEmptyStream[Int](numbers.head, eratosthenes(numbers.tail.filter(_ % numbers.head != 0)))
+
+  println(eratosthenes(MyStream.from(2)(_ + 1)).take(20).toList())
 
     @tailrec
     def fib(n: Int, prev: Int = 1, acc: Int = 0): Int =
