@@ -35,4 +35,29 @@ object EqualityPlayground extends App {
   println(Equal(john, oldJohn))
 
   // AD-HOC polymorphism
+
+  /*
+    Exercise: improve the Equal type class with implicit conversion class
+    ===(anotherValue: T)
+    !==(anotherValue: T)
+   */
+  implicit class EqualEnrichment[T](value: T) {
+    def ===(anotherValue: T)(implicit equalityChecker: Equal[T]): Boolean =
+      equalityChecker(value, anotherValue)
+
+    def !==(anotherValue: T)(implicit equalityChecker: Equal[T]): Boolean =
+      !equalityChecker(value, anotherValue)
+  }
+
+  println("EqualEnrichment exercise")
+  println(john === oldJohn)
+  println(john !== oldJohn)
+  /*
+    john.===(oldJohn)
+    new EqualEnrichment[User].===(oldJohn)
+    new EqualEnrichment[User].===(oldJohn)(UserEqualityChecker)
+   */
+  /*
+    TYPE SAFE
+   */
 }

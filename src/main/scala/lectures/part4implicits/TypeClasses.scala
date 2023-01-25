@@ -72,4 +72,47 @@ object TypeClasses extends App {
 
   println(HTMLSerializer[Int].serialize(42)) //because of companion HTMLSerializer has defined def apply[T](implicit serializer: HTMLSerializer[T]): HTMLSerializer[T]
   println(HTMLSerializer[User].serialize(john)) //because of companion HTMLSerializer has defined def apply[T](implicit serializer: HTMLSerializer[T]): HTMLSerializer[T]
+
+  // part 3
+  implicit class HtmlEnrichment[T](value: T) {
+    def toHtml(implicit serializer: HTMLSerializer[T]): String = serializer.serialize(value)
+  }
+
+  println("HtmlEnrichment")
+  println(john.toHtml)
+  println(3.toHtml)
+  // COOL!
+  /*
+    - extend new types
+    - choose implementation
+    - super expressive
+   */
+
+  // Type Classes composes with several parts
+  /**
+    - type class itself --- trait HTMLSerializer[T]
+    - type class instances(some of which are implicit) ---  implicit object UserSerializer extends HTMLSerializer[User]
+    - conversion with implicit classes --- implicit class HtmlEnrichment[T](value: T)
+   */
+
+  // context bounds
+  def htmlBoilerplate[T](content: T)(implicit serializer: HTMLSerializer[T]): String =
+    s"<html><body>${content.toHtml(serializer)}</body></html>"
+
+  def htmlSugar[T: HTMLSerializer](content: T): String = {
+    s"<html><body>${content.toHtml}</body></html>"
+  }
+
+  def htmlSugar2[T: HTMLSerializer](content: T): String = {
+    val serializer = implicitly[HTMLSerializer[T]]
+    // use serializer
+    s"<html><body>${content.toHtml(serializer)}</body></html>"
+  }
+
+  // implicitly
+  case class Permissions(mask: String)
+  implicit val defaultPermissions: Permissions = Permissions("0744")
+
+  // in some other part of the code
+  val standardPerms = implicitly[Permissions]
 }

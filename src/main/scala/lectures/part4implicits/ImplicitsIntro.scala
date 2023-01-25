@@ -24,6 +24,4 @@ object ImplicitsIntro extends  App {
 
   increment(2)
   // NOT the same as default args
-
-
 }
